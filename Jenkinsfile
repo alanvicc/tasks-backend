@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage ('Build Backend') {
+                stage ('Build Backend') {
             steps {
                 bat 'mvn clean package -DskipTests=true'
             }
@@ -15,17 +15,15 @@ pipeline {
                     environment {
                         scannerHome = tool 'SONAR_SCANNER'
                     }
-                    steps {
-                        withSonarQubeEnv('SONAR_LOCAL') {
-                        echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBackEnd -Dsonar.host.url=http://localhost:9000 -Dsonar.login=fa69b1805c237a69c6aedd7863a547107981b8d2 -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
+            steps {
+                    withSonarQubeEnv('SONAR_LOCAL') {
+                    echo "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBackEnd -Dsonar.host.url=http://localhost:9000 -Dsonar.login=fa69b1805c237a69c6aedd7863a547107981b8d2 -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
                     }
             }
         }
-                        stage ('Quality Gate') {
+                stage ('Quality Gate') {
             steps {
-                sleep(5)
-                timeout(time: 1, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
+                waitForQualityGate abortPipeline: false
                 }
             }
         }
